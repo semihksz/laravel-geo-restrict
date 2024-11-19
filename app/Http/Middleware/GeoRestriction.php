@@ -16,7 +16,7 @@ class GeoRestriction
      */
     public function handle(Request $request, Closure $next): Response
     {
-        $position = Location::get('88.255.216.0');
+        $position = Location::get($request->ip());
         if ($position) {
             $allowedCountries = ['USA', 'UK'];
             $userCountry = $position->countryCode;
@@ -24,7 +24,7 @@ class GeoRestriction
                 return redirect()->route('geo-restricted');
             }
         } else {
-            return response()->json(['error' => 'Konum bilgisi alınamadı!'], 403);
+            return redirect()->route('geo-location-error');
         }
         return $next($request);
     }
